@@ -50,6 +50,9 @@ python3 Scripts/create_templates.py
 
 # 一键构建、签名、安装并启动
 ./build.sh
+
+# 清理构建产物和缓存
+./clean.sh
 ```
 
 > 需要安装 Xcode Command Line Tools（`xcode-select --install`）和 XcodeGen。无需安装完整的 Xcode。

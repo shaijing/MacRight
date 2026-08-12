@@ -43,6 +43,12 @@ struct ContentView: View {
                     .fill(extensionEnabled ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
             )
 
+            Button("打开系统设置 - 扩展") {
+                openExtensionSettings()
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+
             if !extensionEnabled {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("如何启用：")
@@ -58,11 +64,6 @@ struct ContentView: View {
                         .fill(Color.blue.opacity(0.05))
                 )
 
-                Button("打开系统设置 - 扩展") {
-                    openExtensionSettings()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
             }
 
             // Feature list
@@ -94,8 +95,7 @@ struct ContentView: View {
     }
 
     private func checkExtensionStatus() {
-        // This API reports the actual Finder Sync enablement state. It also
-        // avoids blocking the SwiftUI main thread with a pluginkit process.
+        // This API reports the actual Finder Sync enablement state directly.
         extensionEnabled = FIFinderSyncController.isExtensionEnabled
     }
 
@@ -104,6 +104,7 @@ struct ContentView: View {
             NSWorkspace.shared.open(url)
         }
     }
+
 }
 
 struct StepView: View {

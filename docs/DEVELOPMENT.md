@@ -285,6 +285,9 @@ menu.addItem(NSMenuItem(title: "新建 Word 文档", action: #selector(createDoc
 ```bash
 cd /path/to/mac-right
 ./build.sh
+
+# 清理构建产物和缓存
+./clean.sh
 ```
 
 `build.sh` 会依次执行：

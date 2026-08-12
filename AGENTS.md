@@ -37,6 +37,9 @@ project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist
 # 一键构建、签名、安装到 /Applications 并启动
 ./build.sh
 
+# 清理构建产物和缓存
+./clean.sh
+
 # CI 构建（仅构建签名，不安装）
 CI=true ./build.sh v1.0.0
 

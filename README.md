@@ -47,6 +47,9 @@ python3 Scripts/create_templates.py
 
 # Build, sign, install, and launch
 ./build.sh
+
+# Clean build outputs and caches
+./clean.sh
 ```
 
 > Xcode Command Line Tools (`xcode-select --install`) and XcodeGen are required. Full Xcode is optional.
