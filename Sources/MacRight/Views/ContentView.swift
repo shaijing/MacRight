@@ -6,84 +6,85 @@ struct ContentView: View {
     @State private var extensionEnabled = false
 
     var body: some View {
-        VStack(spacing: 24) {
-            // App Icon area
-            Image(systemName: "contextualmenu.and.cursorarrow")
-                .font(.system(size: 64))
-                .foregroundStyle(.blue)
+        ScrollView {
+            VStack(alignment: .center, spacing: 12) {
+                VStack(spacing: 3) {
+                    Image(systemName: "contextualmenu.and.cursorarrow")
+                        .font(.system(size: 38))
+                        .foregroundStyle(.blue)
 
-            Text("MacRight")
-                .font(.largeTitle.bold())
-
-            Text("Finder 右键菜单增强工具")
-                .font(.title3)
-                .foregroundStyle(.secondary)
-
-            Divider()
-
-            // Extension status
-            HStack(spacing: 12) {
-                Image(systemName: extensionEnabled ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(extensionEnabled ? .green : .red)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(extensionEnabled ? "Finder 扩展已启用" : "Finder 扩展未启用")
-                        .font(.headline)
-                    Text(extensionEnabled ? "右键菜单功能已就绪" : "请在系统设置中启用扩展")
-                        .font(.caption)
+                    Text("MacRight")
+                        .font(.title.bold())
+                    Text("Finder 右键菜单增强工具")
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
 
-                Spacer()
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(extensionEnabled ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
-            )
+                Divider()
 
-            Button("打开系统设置 - 扩展") {
-                openExtensionSettings()
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
+                HStack(spacing: 12) {
+                    Image(systemName: extensionEnabled ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(extensionEnabled ? .green : .red)
 
-            if !extensionEnabled {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("如何启用：")
-                        .font(.headline)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(extensionEnabled ? "Finder 扩展已启用" : "Finder 扩展未启用")
+                            .font(.headline)
+                        Text(extensionEnabled ? "右键菜单功能已就绪" : "请在系统设置中启用扩展")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
-                    StepView(number: 1, text: "点击下方按钮打开系统设置")
-                    StepView(number: 2, text: "通用 → 登录项与扩展 → 已添加的扩展")
-                    StepView(number: 3, text: "找到 MacRight，启用 Finder 扩展")
+                    Spacer(minLength: 8)
                 }
-                .padding()
+                .padding(10)
+                .frame(maxWidth: 380, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.blue.opacity(0.05))
+                        .fill(extensionEnabled ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
                 )
 
+                Button("打开系统设置 - 扩展") {
+                    openExtensionSettings()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.regular)
+
+                if !extensionEnabled {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("如何启用")
+                            .font(.headline)
+
+                        StepView(number: 1, text: "打开上方的系统设置")
+                        StepView(number: 2, text: "进入 通用 → 登录项与扩展")
+                        StepView(number: 3, text: "找到 MacRight 并启用 Finder 扩展")
+                    }
+                    .padding(10)
+                    .frame(maxWidth: 380, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.blue.opacity(0.05))
+                    )
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("功能")
+                        .font(.headline)
+
+                    FeatureRow(icon: "doc.badge.plus", title: "新建文件", description: "支持 TXT、Office、Markdown、JSON、CSV")
+                    FeatureRow(icon: "terminal", title: "在此打开终端", description: "支持 Terminal、iTerm、Ghostty 和 cmux")
+                }
+                .padding(10)
+                .frame(maxWidth: 380, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.gray.opacity(0.05))
+                )
             }
-
-            // Feature list
-            VStack(alignment: .leading, spacing: 8) {
-                Text("功能")
-                    .font(.headline)
-
-                FeatureRow(icon: "doc.badge.plus", title: "新建文件", description: "支持 TXT、Office、Markdown、JSON、CSV")
-                FeatureRow(icon: "terminal", title: "在此打开终端", description: "支持 Terminal、iTerm、Ghostty 和 cmux")
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(Color.gray.opacity(0.05))
-            )
-
-            Spacer()
+            .frame(maxWidth: 400)
+            .padding(16)
         }
-        .padding(30)
-        .frame(width: 480, height: 620)
+        .frame(minWidth: 320, idealWidth: 380, minHeight: 300, idealHeight: 430)
         .onAppear {
             checkExtensionStatus()
         }

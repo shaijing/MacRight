@@ -6,7 +6,7 @@ struct MacRightApp: App {
         WindowGroup {
             ContentView()
         }
-        .windowResizability(.contentSize)
+        .windowResizability(.automatic)
 
         Settings {
             SettingsView()
