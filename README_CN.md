@@ -14,6 +14,9 @@ macOS 的 Finder 一直缺少"新建文件"的右键菜单选项——这在 Win
 - **新建 Word 文档** — 在当前目录创建空白 `.docx` 文件
 - **新建 Excel 表格** — 在当前目录创建空白 `.xlsx` 文件
 - **新建 PowerPoint 演示** — 在当前目录创建空白 `.pptx` 文件
+- **新建 Markdown 笔记** — 在当前目录创建空白 `.md` 文件
+- **新建 JSON 数据** — 在当前目录创建空白 `.json` 文件
+- **新建 CSV 表格** — 在当前目录创建空白 `.csv` 文件
 - **在此打开终端** — 在当前目录启动 Terminal.app 或 iTerm2
 
 所有菜单项直接出现在 Finder 右键菜单中，无需额外点击。
@@ -76,7 +79,9 @@ python3 Scripts/create_templates.py
 打开 MacRight.app，按 **Cmd + ,** 进入设置：
 
 - **终端选择** — Terminal.app 或 iTerm2
-- **文件类型** — 选择在右键菜单中显示哪些文件类型（Word、Excel、PowerPoint）
+- **文件类型** — 选择在右键菜单中显示哪些文件类型
+- **默认文件名** — 为每种文件类型设置默认名称，扩展名会自动补全
+- **刷新 Finder 扩展** — 无需重启应用即可重新启用扩展
 
 设置通过 App Group 共享 UserDefaults 在宿主 App 和扩展之间同步。
 

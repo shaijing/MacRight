@@ -11,7 +11,7 @@ final class CmuxLauncher {
 
     static func open(at directory: URL) {
         guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
-            NSLog("MacRight: cmux not found")
+            FinderFeedback.error("未找到 cmux")
             return
         }
 
@@ -24,7 +24,7 @@ final class CmuxLauncher {
             configuration: config
         ) { _, error in
             if let error = error {
-                NSLog("MacRight: Failed to open cmux: \(error.localizedDescription)")
+                FinderFeedback.error("打开 cmux 失败：\(error.localizedDescription)")
             }
         }
     }

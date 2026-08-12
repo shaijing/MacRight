@@ -6,10 +6,13 @@ enum FileType: String, CaseIterable {
     case docx
     case xlsx
     case pptx
+    case md
+    case json
+    case csv
 
     var templateName: String { "blank" }
     var fileExtension: String { rawValue }
-    var needsTemplate: Bool { self != .txt }
+    var needsTemplate: Bool { [.docx, .xlsx, .pptx].contains(self) }
 
     var defaultFileName: String {
         switch self {
@@ -17,6 +20,9 @@ enum FileType: String, CaseIterable {
         case .docx: return "未命名文档.docx"
         case .xlsx: return "未命名表格.xlsx"
         case .pptx: return "未命名演示.pptx"
+        case .md:   return "未命名笔记.md"
+        case .json: return "未命名数据.json"
+        case .csv:  return "未命名表格.csv"
         }
     }
 }
@@ -38,14 +44,14 @@ final class FileCreator {
                 withExtension: type.fileExtension,
                 subdirectory: "Templates"
             ) else {
-                NSLog("MacRight: Template not found for \(type.rawValue)")
+                FinderFeedback.error("找不到 \(type.rawValue) 模板")
                 return nil
             }
 
             do {
                 data = try Data(contentsOf: templateURL)
             } catch {
-                NSLog("MacRight: Failed to read template: \(error.localizedDescription)")
+                FinderFeedback.error("读取模板失败：\(error.localizedDescription)")
                 return nil
             }
         } else {
@@ -54,7 +60,8 @@ final class FileCreator {
 
         // O_EXCL claims the filename and prevents two Finder actions from
         // selecting the same destination between checking and writing.
-        let name = type.defaultFileName
+        let configuredName = Preferences.shared.fileName(for: type.rawValue, defaultValue: type.defaultFileName)
+        let name = normalizedFileName(configuredName, extension: type.fileExtension)
         let base = (name as NSString).deletingPathExtension
         let ext = (name as NSString).pathExtension
 
@@ -69,13 +76,23 @@ final class FileCreator {
             case .alreadyExists:
                 continue
             case .failed(let error):
-                NSLog("MacRight: Failed to create \(destination.path): \(error.localizedDescription)")
+                FinderFeedback.error("创建文件失败：\(error.localizedDescription)")
                 return nil
             }
         }
 
-        NSLog("MacRight: Could not find an available filename for \(name)")
+        FinderFeedback.error("无法为文件找到可用文件名")
         return nil
+    }
+
+    private static func normalizedFileName(_ name: String, extension fileExtension: String) -> String {
+        let trimmed = name
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "/", with: "-")
+        guard !trimmed.isEmpty else { return "未命名.\(fileExtension)" }
+        return (trimmed as NSString).pathExtension.lowercased() == fileExtension
+            ? trimmed
+            : "\(trimmed).\(fileExtension)"
     }
 
     private enum WriteResult {

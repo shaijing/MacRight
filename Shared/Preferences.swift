@@ -51,4 +51,28 @@ final class Preferences {
         get { defaults.object(forKey: "enablePptx") as? Bool ?? true }
         set { defaults.set(newValue, forKey: "enablePptx") }
     }
+
+    var enableMarkdown: Bool {
+        get { defaults.object(forKey: "enableMarkdown") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "enableMarkdown") }
+    }
+
+    var enableJson: Bool {
+        get { defaults.object(forKey: "enableJson") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "enableJson") }
+    }
+
+    var enableCsv: Bool {
+        get { defaults.object(forKey: "enableCsv") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "enableCsv") }
+    }
+
+    func fileName(for key: String, defaultValue: String) -> String {
+        let value = defaults.string(forKey: "fileName.\(key)")?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value?.isEmpty == false ? value! : defaultValue
+    }
+
+    func setFileName(_ value: String, for key: String) {
+        defaults.set(value.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "fileName.\(key)")
+    }
 }

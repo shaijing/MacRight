@@ -8,7 +8,7 @@ final class TerminalLauncher {
         let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID)
 
         guard let appURL = appURL else {
-            NSLog("MacRight: \(app.displayName) not found")
+            FinderFeedback.error("未找到 \(app.displayName)")
             return
         }
 
@@ -23,7 +23,7 @@ final class TerminalLauncher {
             configuration: config
         ) { app, error in
             if let error = error {
-                NSLog("MacRight: Failed to open terminal: \(error.localizedDescription)")
+                FinderFeedback.error("打开终端失败：\(error.localizedDescription)")
             }
         }
     }

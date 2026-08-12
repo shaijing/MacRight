@@ -33,6 +33,7 @@ EXT_SOURCES=(
   "$PROJECT_DIR/FinderSyncExtension/Actions/FileCreator.swift"
   "$PROJECT_DIR/FinderSyncExtension/Actions/TerminalLauncher.swift"
   "$PROJECT_DIR/FinderSyncExtension/Actions/CmuxLauncher.swift"
+  "$PROJECT_DIR/FinderSyncExtension/Actions/FinderFeedback.swift"
 )
 
 echo "==> Compiling host app (universal binary)..."
@@ -57,7 +58,7 @@ for ARCH in arm64 x86_64; do
     -sdk "$SDK_PATH" \
     -target ${ARCH}-apple-macosx13.0 \
     -F "$SDK_PATH/System/Library/Frameworks" \
-    -framework FinderSync -framework Cocoa -framework UniformTypeIdentifiers \
+    -framework FinderSync -framework Cocoa -framework UniformTypeIdentifiers -framework UserNotifications \
     -module-name FinderSyncExtension \
     -emit-executable \
     -o "$BUILD_DIR/FinderSyncExtension_${ARCH}" \

@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 class FinderSync: FIFinderSync {
 
     private var refreshTimer: Timer?
+    private var monitoredDirectories = Set<URL>()
 
     override init() {
         super.init()
@@ -18,9 +19,17 @@ class FinderSync: FIFinderSync {
                        name: NSWorkspace.didUnmountNotification, object: nil)
 
         // 定时刷新作为 fallback（Finder Sync 扩展中 NSWorkspace 通知可能不可靠）
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
             self?.updateMonitoredDirectories()
         }
+    }
+
+    deinit {
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+        let nc = NSWorkspace.shared.notificationCenter
+        nc.removeObserver(self, name: NSWorkspace.didMountNotification, object: nil)
+        nc.removeObserver(self, name: NSWorkspace.didUnmountNotification, object: nil)
     }
 
     // MARK: - Volume Monitoring
@@ -46,7 +55,9 @@ class FinderSync: FIFinderSync {
             }
         }
 
-        NSLog("MacRight: 监控目录 = \(urls.map { $0.path })")
+        guard urls != monitoredDirectories else { return }
+        monitoredDirectories = urls
+        NSLog("MacRight: 监控目录已更新 = \(urls.map { $0.path }.sorted())")
         FIFinderSyncController.default().directoryURLs = urls
     }
 
@@ -63,6 +74,15 @@ class FinderSync: FIFinderSync {
         }
         if prefs.enablePptx {
             menu.addItem(NSMenuItem(title: "新建 PowerPoint 演示", action: #selector(createPptx(_:)), keyEquivalent: ""))
+        }
+        if prefs.enableMarkdown {
+            menu.addItem(NSMenuItem(title: "新建 Markdown 笔记", action: #selector(createMarkdown(_:)), keyEquivalent: ""))
+        }
+        if prefs.enableJson {
+            menu.addItem(NSMenuItem(title: "新建 JSON 数据", action: #selector(createJson(_:)), keyEquivalent: ""))
+        }
+        if prefs.enableCsv {
+            menu.addItem(NSMenuItem(title: "新建 CSV 表格", action: #selector(createCsv(_:)), keyEquivalent: ""))
         }
         menu.addItem(NSMenuItem(title: "在此打开终端", action: #selector(openTerminal(_:)), keyEquivalent: ""))
         if CmuxLauncher.isInstalled {
@@ -96,37 +116,52 @@ class FinderSync: FIFinderSync {
 
     @objc func createTxt(_ sender: AnyObject?) {
         NSLog("MacRight: createTxt called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         FileCreator.createFile(type: .txt, in: dir)
     }
 
     @objc func createDocx(_ sender: AnyObject?) {
         NSLog("MacRight: createDocx called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         FileCreator.createFile(type: .docx, in: dir)
     }
 
     @objc func createXlsx(_ sender: AnyObject?) {
         NSLog("MacRight: createXlsx called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         FileCreator.createFile(type: .xlsx, in: dir)
     }
 
     @objc func createPptx(_ sender: AnyObject?) {
         NSLog("MacRight: createPptx called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         FileCreator.createFile(type: .pptx, in: dir)
+    }
+
+    @objc func createMarkdown(_ sender: AnyObject?) {
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
+        FileCreator.createFile(type: .md, in: dir)
+    }
+
+    @objc func createJson(_ sender: AnyObject?) {
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
+        FileCreator.createFile(type: .json, in: dir)
+    }
+
+    @objc func createCsv(_ sender: AnyObject?) {
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
+        FileCreator.createFile(type: .csv, in: dir)
     }
 
     @objc func openTerminal(_ sender: AnyObject?) {
         NSLog("MacRight: openTerminal called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         TerminalLauncher.open(at: dir, using: Preferences.shared.preferredTerminal)
     }
 
     @objc func openCmux(_ sender: AnyObject?) {
         NSLog("MacRight: openCmux called!")
-        guard let dir = targetDirectory else { NSLog("MacRight: no target dir"); return }
+        guard let dir = targetDirectory else { FinderFeedback.error("无法确定当前目录"); return }
         CmuxLauncher.open(at: dir)
     }
 }

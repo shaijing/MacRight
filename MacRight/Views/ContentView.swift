@@ -2,6 +2,7 @@ import SwiftUI
 import FinderSync
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var extensionEnabled = false
 
     var body: some View {
@@ -69,8 +70,8 @@ struct ContentView: View {
                 Text("功能")
                     .font(.headline)
 
-                FeatureRow(icon: "doc.badge.plus", title: "新建 Office 文件", description: "右键创建 Word、Excel、PowerPoint")
-                FeatureRow(icon: "terminal", title: "在此打开终端", description: "在当前目录打开 Terminal 或 iTerm")
+                FeatureRow(icon: "doc.badge.plus", title: "新建文件", description: "支持 TXT、Office、Markdown、JSON、CSV")
+                FeatureRow(icon: "terminal", title: "在此打开终端", description: "支持 Terminal、iTerm、Ghostty 和 cmux")
             }
             .padding()
             .background(
@@ -85,24 +86,17 @@ struct ContentView: View {
         .onAppear {
             checkExtensionStatus()
         }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                checkExtensionStatus()
+            }
+        }
     }
 
     private func checkExtensionStatus() {
-        // Check if our extension is enabled via pluginkit
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/pluginkit")
-        process.arguments = ["-m", "-p", "com.apple.FinderSync"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        do {
-            try process.run()
-            process.waitUntilExit()
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: data, encoding: .utf8) ?? ""
-            extensionEnabled = output.contains(AppConstants.extensionBundleID)
-        } catch {
-            extensionEnabled = false
-        }
+        // This API reports the actual Finder Sync enablement state. It also
+        // avoids blocking the SwiftUI main thread with a pluginkit process.
+        extensionEnabled = FIFinderSyncController.isExtensionEnabled
     }
 
     private func openExtensionSettings() {
