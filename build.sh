@@ -6,13 +6,24 @@ SDK_PATH=$(xcrun --sdk macosx --show-sdk-path)
 BUILD_DIR="$PROJECT_DIR/build"
 APP_DIR="$BUILD_DIR/MacRight.app/Contents"
 EXT_DIR="$APP_DIR/PlugIns/FinderSyncExtension.appex/Contents"
-VERSION="${1#v}"
-if [ -z "$VERSION" ]; then
-  VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PROJECT_DIR/MacRight/Info.plist")
-fi
 
 echo "==> Cleaning..."
 rm -rf "$BUILD_DIR"
+
+if ! command -v xcodegen >/dev/null 2>&1; then
+  echo "错误：未找到 xcodegen。请先安装 xcodegen，再运行 build.sh。" >&2
+  exit 1
+fi
+
+echo "==> Generating Xcode project, Info.plists and entitlements..."
+xcodegen generate --spec "$PROJECT_DIR/project.yml"
+
+VERSION="${1#v}"
+GENERATED_PLIST_DIR="$BUILD_DIR/GeneratedPlists"
+python3 "$PROJECT_DIR/Scripts/prepare_swiftc_plists.py" "$VERSION" "$GENERATED_PLIST_DIR"
+if [ -z "$VERSION" ]; then
+  VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$GENERATED_PLIST_DIR/MacRight.Info.plist")
+fi
 
 echo "==> Creating bundle structure..."
 mkdir -p "$APP_DIR/MacOS" "$APP_DIR/Resources"
@@ -74,32 +85,17 @@ echo "==> Copying resources..."
 cp "$PROJECT_DIR/FinderSyncExtension/Resources/Templates/blank."* "$EXT_DIR/Resources/Templates/"
 
 # Host app Info.plist
-cp "$PROJECT_DIR/MacRight/Info.plist" "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleExecutable string MacRight' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.macright.app' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundlePackageType string APPL' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleInfoDictionaryVersion string 6.0' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :NSPrincipalClass string NSApplication' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :NSHighResolutionCapable bool true' "$APP_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$APP_DIR/Info.plist"
+cp "$GENERATED_PLIST_DIR/MacRight.Info.plist" "$APP_DIR/Info.plist"
 
 # Extension Info.plist
-cp "$PROJECT_DIR/FinderSyncExtension/Info.plist" "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleExecutable string FinderSyncExtension' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.macright.app.FinderSyncExtension' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundlePackageType string XPC!' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleInfoDictionaryVersion string 6.0' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleDevelopmentRegion string en' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :NSPrincipalClass string NSApplication' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleSupportedPlatforms array' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleSupportedPlatforms:0 string MacOSX' "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$EXT_DIR/Info.plist"
-/usr/libexec/PlistBuddy -c 'Set :NSExtension:NSExtensionPrincipalClass FinderSyncExtension.FinderSync' "$EXT_DIR/Info.plist"
+cp "$GENERATED_PLIST_DIR/FinderSyncExtension.Info.plist" "$EXT_DIR/Info.plist"
 
 echo -n "APPL????" > "$APP_DIR/PkgInfo"
 
 echo "==> Signing..."
+codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" "$EXT_DIR/MacOS/FinderSyncExtension"
 codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" "$BUILD_DIR/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex"
+codesign --force --sign - --entitlements "$PROJECT_DIR/MacRight/MacRight.entitlements" "$APP_DIR/MacOS/MacRight"
 codesign --force --sign - --entitlements "$PROJECT_DIR/MacRight/MacRight.entitlements" "$BUILD_DIR/MacRight.app"
 
 # CI 模式：仅构建签名，不安装到本地

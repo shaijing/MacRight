@@ -52,7 +52,15 @@ python3 Scripts/create_templates.py
 ./build.sh
 ```
 
-> 只需安装 Xcode Command Line Tools（`xcode-select --install`），不需要完整的 Xcode。
+> 需要安装 Xcode Command Line Tools（`xcode-select --install`）和 XcodeGen。无需安装完整的 Xcode。
+
+安装 XcodeGen：
+
+```bash
+brew install xcodegen
+```
+
+`project.yml` 是构建元数据的唯一来源。`build.sh` 会先运行 `xcodegen generate` 生成 Xcode 项目、Info.plist 和 entitlements，然后仍使用 `swiftc` 编译 Universal Binary。
 
 ### 启用扩展
 

@@ -77,7 +77,7 @@ MacRight 只使用了**右键菜单**功能。
 ### 2.1 系统要求
 
 - **macOS 13.0 (Ventura)** 或更高版本
-- **Xcode Command Line Tools**（不需要完整的 Xcode）
+- **Xcode Command Line Tools** 和 **XcodeGen**（不需要完整的 Xcode）
 - **Python 3**（用于生成模板文件，macOS 自带）
 
 ### 2.2 安装 Command Line Tools
@@ -99,11 +99,19 @@ xcrun --sdk macosx --show-sdk-path
 # 应输出类似：/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 ```
 
-### 2.3 可选：安装完整 Xcode
+### 2.3 安装 XcodeGen
+
+`build.sh` 会先使用 XcodeGen 从 `project.yml` 生成 `.xcodeproj`、两个 `Info.plist` 和两个 entitlements 文件，然后继续使用 `swiftc` 编译。因此 XcodeGen 是构建前置依赖，完整 Xcode 仍然是可选的。
+
+```bash
+brew install xcodegen
+```
+
+### 2.4 可选：安装完整 Xcode
 
 如果你想用 Xcode IDE 开发（有代码补全、可视化调试等），可以从 Mac App Store 安装 Xcode。
 
-安装后运行 `xcodegen` 生成 Xcode 项目：
+安装后也可以运行 `xcodegen` 生成 Xcode 项目：
 
 ```bash
 # 安装 xcodegen（如果没有 Homebrew，先安装 Homebrew）
@@ -141,7 +149,7 @@ python3 Scripts/create_templates.py
 ```
 mac-right/
 ├── build.sh                                # 一键构建脚本（核心！）
-├── project.yml                             # xcodegen 配置（可选，用于生成 Xcode 项目）
+├── project.yml                             # 唯一构建配置（生成项目、Info.plist 和 entitlements）
 │
 ├── MacRight/                               # 宿主 App 源码
 │   ├── MacRightApp.swift                   # SwiftUI App 入口（@main）

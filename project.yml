@@ -10,6 +10,8 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     MACOSX_DEPLOYMENT_TARGET: "13.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
 
 targets:
   MacRight:
@@ -19,14 +21,30 @@ targets:
       - path: MacRight
         excludes:
           - "**/.DS_Store"
+          - "Info.plist"
+          - "MacRight.entitlements"
       - path: Shared
         excludes:
           - "**/.DS_Store"
+    info:
+      path: MacRight/Info.plist
+      properties:
+        CFBundleDisplayName: MacRight
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "13.0"
+        NSPrincipalClass: NSApplication
+        NSHighResolutionCapable: true
+    entitlements:
+      path: MacRight/MacRight.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.application-groups:
+          - group.com.macright.app
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.macright.app
-        INFOPLIST_FILE: MacRight/Info.plist
-        CODE_SIGN_ENTITLEMENTS: MacRight/MacRight.entitlements
         PRODUCT_NAME: MacRight
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         COMBINE_HIDPI_IMAGES: YES
@@ -42,6 +60,8 @@ targets:
       - path: FinderSyncExtension
         excludes:
           - "**/.DS_Store"
+          - "Info.plist"
+          - "FinderSyncExtension.entitlements"
           - Resources/Templates
       - path: Shared
         excludes:
@@ -49,11 +69,35 @@ targets:
     resources:
       - path: FinderSyncExtension/Resources/Templates
         buildPhase: resources
+    info:
+      path: FinderSyncExtension/Info.plist
+      properties:
+        CFBundleDisplayName: MacRight Finder Extension
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "13.0"
+        NSExtension:
+          NSExtensionAttributes: {}
+          NSExtensionPointIdentifier: com.apple.FinderSync
+          NSExtensionPrincipalClass: FinderSyncExtension.FinderSync
+    entitlements:
+      path: FinderSyncExtension/FinderSyncExtension.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.files.home-relative-path.read-write:
+          - /
+        com.apple.security.files.downloads.read-write: true
+        com.apple.security.files.volumes.removable.read-write: true
+        com.apple.security.temporary-exception.files.home-relative-path.read-write:
+          - /
+        com.apple.security.temporary-exception.files.absolute-path.read-write:
+          - /Volumes/
+        com.apple.security.application-groups:
+          - group.com.macright.app
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.macright.app.FinderSyncExtension
-        INFOPLIST_FILE: FinderSyncExtension/Info.plist
-        CODE_SIGN_ENTITLEMENTS: FinderSyncExtension/FinderSyncExtension.entitlements
         PRODUCT_NAME: FinderSyncExtension
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
         SKIP_INSTALL: YES

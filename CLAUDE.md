@@ -24,14 +24,17 @@ FinderSyncExtension/       # Finder Sync 扩展（核心功能）
   ├── Actions/             # FileCreator.swift, TerminalLauncher.swift, CmuxLauncher.swift
   └── Resources/Templates/ # blank.docx/xlsx/pptx 空白模板
 Shared/                    # 两个 Target 共享（Constants.swift, Preferences.swift）
-Scripts/                   # create_templates.py（生成空白 Office 模板）
+Scripts/                   # 构建和模板生成脚本
 build.sh                   # 一键构建/签名/安装脚本（支持版本号参数）
-project.yml                # xcodegen 配置（可选，生成 .xcodeproj）
+project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist / entitlements
 ```
 
 ## 构建命令
 
 ```bash
+# 安装构建前置依赖
+brew install xcodegen
+
 # 一键构建、签名、安装到 /Applications 并启动
 ./build.sh
 
@@ -41,7 +44,7 @@ CI=true ./build.sh v1.0.0
 # 生成 Office 空白模板（首次或模板丢失时）
 python3 Scripts/create_templates.py
 
-# 生成 Xcode 项目（可选，需先 brew install xcodegen）
+# 生成 Xcode 项目、Info.plist 和 entitlements
 xcodegen generate
 ```
 
@@ -77,7 +80,7 @@ killall pkd && sleep 1 && pluginkit -e use -i com.macright.app.FinderSyncExtensi
 
 ## 动态卷监控
 
-FinderSync 监听 NSWorkspace 卷挂载/卸载通知，动态更新 `FIFinderSyncController.default().directoryURLs`，支持外接硬盘、U 盘等移动存储设备。同时使用 10 秒定时器作为 fallback（Finder Sync 扩展中通知可能不可靠）。
+FinderSync 监听 NSWorkspace 卷挂载/卸载通知，动态更新 `FIFinderSyncController.default().directoryURLs`，支持外接硬盘、U 盘等移动存储设备。同时使用 30 秒定时器作为 fallback。
 
 ## 标识符
 
@@ -87,10 +90,10 @@ FinderSync 监听 NSWorkspace 卷挂载/卸载通知，动态更新 `FIFinderSyn
 
 ## 宿主 App ↔ 扩展通信
 
-通过 App Group 共享 `UserDefaults(suiteName: "group.com.macright.app")` 传递偏好设置（终端选择、文件类型开关）。
+通过 App Group 共享 `UserDefaults(suiteName: "group.com.macright.app")` 传递偏好设置（终端选择、文件类型开关、默认文件名）。
 
 ## 代码规范
 
 - 所有用户可见文本使用中文
 - NSLog 前缀统一为 `"MacRight: "`
-- 文件创建使用三级 fallback：Data.write → FileManager.createFile → /bin/cp
+- 文件创建使用独占文件描述符，避免重名竞争

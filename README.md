@@ -49,7 +49,15 @@ python3 Scripts/create_templates.py
 ./build.sh
 ```
 
-> Only Xcode Command Line Tools are required (`xcode-select --install`). Full Xcode is optional.
+> Xcode Command Line Tools (`xcode-select --install`) and XcodeGen are required. Full Xcode is optional.
+
+Install XcodeGen with Homebrew:
+
+```bash
+brew install xcodegen
+```
+
+`project.yml` is the single source of build metadata. `build.sh` runs `xcodegen generate` first to create the Xcode project, Info.plists, and entitlements, then continues to compile the Universal Binary with `swiftc`.
 
 ### Enable the Extension
 

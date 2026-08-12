@@ -26,7 +26,7 @@ FinderSyncExtension/       # Finder Sync 扩展（核心功能）
 Shared/                    # 两个 Target 共享（Constants.swift, Preferences.swift）
 Scripts/                   # create_templates.py（生成空白 Office 模板）
 build.sh                   # 一键构建/签名/安装脚本（支持版本号参数）
-project.yml                # xcodegen 配置（可选，生成 .xcodeproj）
+project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist / entitlements
 ```
 
 ## 构建命令
@@ -41,7 +41,7 @@ CI=true ./build.sh v1.0.0
 # 生成 Office 空白模板（首次或模板丢失时）
 python3 Scripts/create_templates.py
 
-# 生成 Xcode 项目（可选，需先 brew install xcodegen）
+# 生成 Xcode 项目、Info.plist 和 entitlements（需先 brew install xcodegen）
 xcodegen generate
 ```
 

@@ -17,6 +17,8 @@
 		4D4C4E148DB10463286712D2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3411A4C0A522F25D8B8CAB4 /* Constants.swift */; };
 		4F628A829F6B4F0929B420D1 /* FinderSyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9C7368633F7852A505D8DA1E /* FinderSyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		527E8837C0974483FE0D3E61 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDF1638072271E7B5E5B9A3 /* ContentView.swift */; };
+		5D5D4DD45DB9C3AB61A01742 /* CmuxLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 756E60CCC3878A0F71DC16A0 /* CmuxLauncher.swift */; };
+		D080DA59AEDEC7F972898E58 /* FinderFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E4E4CFEF92D9338051589E /* FinderFeedback.swift */; };
 		E766220A90ACD294ED1E6E0B /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031156A4E24F8D73AB2230D6 /* Preferences.swift */; };
 		FF778BE52E051E4B91544235 /* FinderSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C921E55AA255723ECF14A3 /* FinderSync.swift */; };
 /* End PBXBuildFile section */
@@ -49,17 +51,15 @@
 		031156A4E24F8D73AB2230D6 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		220CD185E061E5D95C079DCD /* MacRight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacRight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3907076461CCA0EF33E646FD /* MacRightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRightApp.swift; sourceTree = "<group>"; };
-		44CCDDD6921625A40E2B4529 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5082CED16A702D1207AAB41C /* FileCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCreator.swift; sourceTree = "<group>"; };
-		5CF0B91BC964560DE6BECABF /* MacRight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacRight.entitlements; sourceTree = "<group>"; };
+		57E4E4CFEF92D9338051589E /* FinderFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderFeedback.swift; sourceTree = "<group>"; };
 		6B31E2DA7A370A07EF3E062A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6DDF1638072271E7B5E5B9A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		756E60CCC3878A0F71DC16A0 /* CmuxLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CmuxLauncher.swift; sourceTree = "<group>"; };
 		9C7368633F7852A505D8DA1E /* FinderSyncExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5C921E55AA255723ECF14A3 /* FinderSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSync.swift; sourceTree = "<group>"; };
 		C96F54CAFBF9218035FECCCA /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		CC79FE2C6DA5A6C4245A24F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F3411A4C0A522F25D8B8CAB4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		F450E63D5D615BC7C7DB830E /* FinderSyncExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExtension.entitlements; sourceTree = "<group>"; };
 		F8D6D5906C84B8C37FCE5BE7 /* TerminalLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLauncher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,8 +96,6 @@
 			isa = PBXGroup;
 			children = (
 				6B31E2DA7A370A07EF3E062A /* Assets.xcassets */,
-				44CCDDD6921625A40E2B4529 /* Info.plist */,
-				5CF0B91BC964560DE6BECABF /* MacRight.entitlements */,
 				3907076461CCA0EF33E646FD /* MacRightApp.swift */,
 				FCFFCB1E0901CD532913F4E8 /* Views */,
 			);
@@ -108,8 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				C5C921E55AA255723ECF14A3 /* FinderSync.swift */,
-				F450E63D5D615BC7C7DB830E /* FinderSyncExtension.entitlements */,
-				CC79FE2C6DA5A6C4245A24F9 /* Info.plist */,
 				FBC0E7FA1BB28315C9EB7C8A /* Actions */,
 				F959380449C3AF9F4B72BE74 /* Resources */,
 			);
@@ -126,7 +122,9 @@
 		FBC0E7FA1BB28315C9EB7C8A /* Actions */ = {
 			isa = PBXGroup;
 			children = (
+				756E60CCC3878A0F71DC16A0 /* CmuxLauncher.swift */,
 				5082CED16A702D1207AAB41C /* FileCreator.swift */,
+				57E4E4CFEF92D9338051589E /* FinderFeedback.swift */,
 				F8D6D5906C84B8C37FCE5BE7 /* TerminalLauncher.swift */,
 			);
 			path = Actions;
@@ -206,8 +204,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A4F583B3B6E9F2B4740A64CA /* FinderSyncExtension */,
 				C5228A55C6CFEE28994F65E3 /* MacRight */,
+				A4F583B3B6E9F2B4740A64CA /* FinderSyncExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -240,8 +238,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D5D4DD45DB9C3AB61A01742 /* CmuxLauncher.swift in Sources */,
 				089F10D84854486DF0CEEC5A /* Constants.swift in Sources */,
 				2A84783325A8275E62C01166 /* FileCreator.swift in Sources */,
+				D080DA59AEDEC7F972898E58 /* FinderFeedback.swift in Sources */,
 				FF778BE52E051E4B91544235 /* FinderSync.swift in Sources */,
 				E766220A90ACD294ED1E6E0B /* Preferences.swift in Sources */,
 				294B434D335BE573E5D13C5C /* TerminalLauncher.swift in Sources */,
@@ -307,6 +307,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -325,6 +326,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -370,6 +372,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -382,6 +385,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
