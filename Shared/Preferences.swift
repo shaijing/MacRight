@@ -1,6 +1,7 @@
 import Foundation
 
 enum TerminalApp: String, CaseIterable, Identifiable {
+    case ghostty = "Ghostty"
     case terminal = "Terminal"
     case iterm = "iTerm"
 
@@ -8,6 +9,7 @@ enum TerminalApp: String, CaseIterable, Identifiable {
 
     var bundleIdentifier: String {
         switch self {
+        case .ghostty: return "com.mitchellh.ghostty"
         case .terminal: return "com.apple.Terminal"
         case .iterm: return "com.googlecode.iterm2"
         }

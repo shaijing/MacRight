@@ -6,6 +6,10 @@ SDK_PATH=$(xcrun --sdk macosx --show-sdk-path)
 BUILD_DIR="$PROJECT_DIR/build"
 APP_DIR="$BUILD_DIR/MacRight.app/Contents"
 EXT_DIR="$APP_DIR/PlugIns/FinderSyncExtension.appex/Contents"
+VERSION="${1#v}"
+if [ -z "$VERSION" ]; then
+  VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PROJECT_DIR/MacRight/Info.plist")
+fi
 
 echo "==> Cleaning..."
 rm -rf "$BUILD_DIR"
@@ -69,66 +73,29 @@ echo "==> Copying resources..."
 cp "$PROJECT_DIR/FinderSyncExtension/Resources/Templates/blank."* "$EXT_DIR/Resources/Templates/"
 
 # Host app Info.plist
-cat > "$APP_DIR/Info.plist" << 'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>CFBundleExecutable</key><string>MacRight</string>
-    <key>CFBundleIdentifier</key><string>com.macright.app</string>
-    <key>CFBundleName</key><string>MacRight</string>
-    <key>CFBundleDisplayName</key><string>MacRight</string>
-    <key>CFBundleVersion</key><string>1</string>
-    <key>CFBundleShortVersionString</key><string>1.0.0</string>
-    <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-    <key>LSMinimumSystemVersion</key><string>13.0</string>
-    <key>NSPrincipalClass</key><string>NSApplication</string>
-    <key>NSHighResolutionCapable</key><true/>
-</dict>
-</plist>
-PLIST
+cp "$PROJECT_DIR/MacRight/Info.plist" "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleExecutable string MacRight' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.macright.app' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundlePackageType string APPL' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleInfoDictionaryVersion string 6.0' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :NSPrincipalClass string NSApplication' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :NSHighResolutionCapable bool true' "$APP_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$APP_DIR/Info.plist"
 
 # Extension Info.plist
-cat > "$EXT_DIR/Info.plist" << 'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>CFBundleExecutable</key><string>FinderSyncExtension</string>
-    <key>CFBundleIdentifier</key><string>com.macright.app.FinderSyncExtension</string>
-    <key>CFBundleName</key><string>FinderSyncExtension</string>
-    <key>CFBundleDisplayName</key><string>MacRight Finder Extension</string>
-    <key>CFBundleVersion</key><string>1</string>
-    <key>CFBundleShortVersionString</key><string>1.0.0</string>
-    <key>CFBundlePackageType</key><string>XPC!</string>
-    <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-    <key>CFBundleDevelopmentRegion</key><string>en</string>
-    <key>LSMinimumSystemVersion</key><string>13.0</string>
-    <key>NSPrincipalClass</key><string>NSApplication</string>
-    <key>CFBundleSupportedPlatforms</key>
-    <array><string>MacOSX</string></array>
-    <key>NSExtension</key>
-    <dict>
-        <key>NSExtensionAttributes</key><dict/>
-        <key>NSExtensionPointIdentifier</key><string>com.apple.FinderSync</string>
-        <key>NSExtensionPrincipalClass</key><string>FinderSyncExtension.FinderSync</string>
-    </dict>
-</dict>
-</plist>
-PLIST
+cp "$PROJECT_DIR/FinderSyncExtension/Info.plist" "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleExecutable string FinderSyncExtension' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleIdentifier string com.macright.app.FinderSyncExtension' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundlePackageType string XPC!' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleInfoDictionaryVersion string 6.0' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleDevelopmentRegion string en' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :NSPrincipalClass string NSApplication' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleSupportedPlatforms array' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleSupportedPlatforms:0 string MacOSX' "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$EXT_DIR/Info.plist"
+/usr/libexec/PlistBuddy -c 'Set :NSExtension:NSExtensionPrincipalClass FinderSyncExtension.FinderSync' "$EXT_DIR/Info.plist"
 
 echo -n "APPL????" > "$APP_DIR/PkgInfo"
-
-# 如果传入了版本号参数，写入 Info.plist
-VERSION="${1:-}"
-if [ -n "$VERSION" ]; then
-  # 去掉 v 前缀
-  VER="${VERSION#v}"
-  echo "==> Setting version to $VER..."
-  sed -i '' "s|<string>1.0.0</string>|<string>$VER</string>|g" "$APP_DIR/Info.plist"
-  sed -i '' "s|<string>1.0.0</string>|<string>$VER</string>|g" "$EXT_DIR/Info.plist"
-fi
 
 echo "==> Signing..."
 codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" "$BUILD_DIR/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex"

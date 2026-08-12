@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 enum FileType: String, CaseIterable {
     case txt
@@ -30,80 +31,75 @@ final class FileCreator {
             if accessing { directory.stopAccessingSecurityScopedResource() }
         }
 
-        let destination = uniqueURL(for: type.defaultFileName, in: directory)
+        let data: Data
+        if type.needsTemplate {
+            guard let templateURL = Bundle.main.url(
+                forResource: type.templateName,
+                withExtension: type.fileExtension,
+                subdirectory: "Templates"
+            ) else {
+                NSLog("MacRight: Template not found for \(type.rawValue)")
+                return nil
+            }
 
-        // txt: just create an empty file
-        if !type.needsTemplate {
             do {
-                try Data().write(to: destination, options: .atomic)
-                NSLog("MacRight: Created empty file at \(destination.path)")
-                return destination
+                data = try Data(contentsOf: templateURL)
             } catch {
-                NSLog("MacRight: Failed to create empty file: \(error.localizedDescription)")
+                NSLog("MacRight: Failed to read template: \(error.localizedDescription)")
+                return nil
+            }
+        } else {
+            data = Data()
+        }
+
+        // O_EXCL claims the filename and prevents two Finder actions from
+        // selecting the same destination between checking and writing.
+        let name = type.defaultFileName
+        let base = (name as NSString).deletingPathExtension
+        let ext = (name as NSString).pathExtension
+
+        for counter in 1...10_000 {
+            let filename = counter == 1 ? name : "\(base) \(counter).\(ext)"
+            let destination = directory.appendingPathComponent(filename)
+
+            switch writeExclusively(data, to: destination) {
+            case .created:
+                NSLog("MacRight: Created file at \(destination.path)")
+                return destination
+            case .alreadyExists:
+                continue
+            case .failed(let error):
+                NSLog("MacRight: Failed to create \(destination.path): \(error.localizedDescription)")
                 return nil
             }
         }
 
-        guard let templateURL = Bundle.main.url(
-            forResource: type.templateName,
-            withExtension: type.fileExtension,
-            subdirectory: "Templates"
-        ) else {
-            NSLog("MacRight: Template not found for \(type.rawValue)")
-            return nil
-        }
-
-        do {
-            let data = try Data(contentsOf: templateURL)
-            try data.write(to: destination, options: .atomic)
-            NSLog("MacRight: Created file at \(destination.path)")
-            return destination
-        } catch {
-            NSLog("MacRight: Data.write failed: \(error.localizedDescription)")
-        }
-
-        // Fallback: FileManager.createFile
-        if let data = try? Data(contentsOf: templateURL) {
-            if FileManager.default.createFile(atPath: destination.path, contents: data, attributes: nil) {
-                NSLog("MacRight: Created file (createFile) at \(destination.path)")
-                return destination
-            }
-        }
-
-        // Last resort: use /usr/bin/cp via shell
-        NSLog("MacRight: Trying cp fallback...")
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/cp")
-        process.arguments = [templateURL.path, destination.path]
-        do {
-            try process.run()
-            process.waitUntilExit()
-            if process.terminationStatus == 0 {
-                NSLog("MacRight: Created file (cp) at \(destination.path)")
-                return destination
-            }
-        } catch {
-            NSLog("MacRight: cp fallback failed: \(error.localizedDescription)")
-        }
-
-        NSLog("MacRight: All methods failed for \(destination.path)")
+        NSLog("MacRight: Could not find an available filename for \(name)")
         return nil
     }
 
-    private static func uniqueURL(for name: String, in directory: URL) -> URL {
-        let fileManager = FileManager.default
-        let nameWithoutExt = (name as NSString).deletingPathExtension
-        let ext = (name as NSString).pathExtension
+    private enum WriteResult {
+        case created
+        case alreadyExists
+        case failed(Error)
+    }
 
-        var candidate = directory.appendingPathComponent(name)
-        var counter = 2
-
-        while fileManager.fileExists(atPath: candidate.path) {
-            let newName = "\(nameWithoutExt) \(counter).\(ext)"
-            candidate = directory.appendingPathComponent(newName)
-            counter += 1
+    private static func writeExclusively(_ data: Data, to url: URL) -> WriteResult {
+        let descriptor = open(url.path, O_WRONLY | O_CREAT | O_EXCL, 0o644)
+        guard descriptor >= 0 else {
+            if errno == EEXIST { return .alreadyExists }
+            return .failed(CocoaError(.fileWriteUnknown, userInfo: [NSFilePathErrorKey: url.path]))
         }
 
-        return candidate
+        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+        do {
+            try handle.write(contentsOf: data)
+            try handle.close()
+            return .created
+        } catch {
+            try? handle.close()
+            try? FileManager.default.removeItem(at: url)
+            return .failed(error)
+        }
     }
 }
