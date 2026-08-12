@@ -18,16 +18,16 @@ targets:
     type: application
     platform: macOS
     sources:
-      - path: MacRight
+      - path: Sources/MacRight
         excludes:
           - "**/.DS_Store"
           - "Info.plist"
           - "MacRight.entitlements"
-      - path: Shared
+      - path: Sources/Shared
         excludes:
           - "**/.DS_Store"
     info:
-      path: MacRight/Info.plist
+      path: Sources/MacRight/Info.plist
       properties:
         CFBundleDisplayName: MacRight
         CFBundleShortVersionString: "1.0.0"
@@ -36,7 +36,7 @@ targets:
         NSPrincipalClass: NSApplication
         NSHighResolutionCapable: true
     entitlements:
-      path: MacRight/MacRight.entitlements
+      path: Sources/MacRight/MacRight.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.files.user-selected.read-write: true
@@ -57,20 +57,20 @@ targets:
     type: app-extension
     platform: macOS
     sources:
-      - path: FinderSyncExtension
+      - path: Sources/FinderSyncExtension
         excludes:
           - "**/.DS_Store"
           - "Info.plist"
           - "FinderSyncExtension.entitlements"
           - Resources/Templates
-      - path: Shared
+      - path: Sources/Shared
         excludes:
           - "**/.DS_Store"
     resources:
-      - path: FinderSyncExtension/Resources/Templates
+      - path: Sources/FinderSyncExtension/Resources/Templates
         buildPhase: resources
     info:
-      path: FinderSyncExtension/Info.plist
+      path: Sources/FinderSyncExtension/Info.plist
       properties:
         CFBundleDisplayName: MacRight Finder Extension
         CFBundleShortVersionString: "1.0.0"
@@ -81,7 +81,7 @@ targets:
           NSExtensionPointIdentifier: com.apple.FinderSync
           NSExtensionPrincipalClass: FinderSyncExtension.FinderSync
     entitlements:
-      path: FinderSyncExtension/FinderSyncExtension.entitlements
+      path: Sources/FinderSyncExtension/FinderSyncExtension.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.files.user-selected.read-write: true

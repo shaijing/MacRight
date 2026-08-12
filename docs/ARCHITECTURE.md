@@ -67,7 +67,7 @@ Finder Sync Extension 是唯一能**直接在右键菜单顶层添加菜单项**
 │  └────────────────────────────────────────────────────────┘  │
 │                                                              │
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │ Shared/ (共享代码)                                      │  │
+│  │ Sources/Shared/ (共享代码)                              │  │
 │  │ - Constants.swift: App Group ID 等常量                   │  │
 │  │ - Preferences.swift: UserDefaults 封装                   │  │
 │  └────────────────────────────────────────────────────────┘  │
@@ -116,7 +116,7 @@ mac-right/
 ├── project.yml                            # xcodegen 声明式配置
 ├── build.sh                               # 一键构建+签名+安装脚本
 │
-├── MacRight/                              # TARGET 1: 宿主 App
+├── Sources/MacRight/                    # TARGET 1: 宿主 App
 │   ├── MacRightApp.swift                  # @main SwiftUI 入口
 │   ├── Views/
 │   │   ├── ContentView.swift              # 主界面
@@ -125,7 +125,7 @@ mac-right/
 │   ├── Info.plist                         # App 元数据
 │   └── MacRight.entitlements              # App 权限声明
 │
-├── FinderSyncExtension/                   # TARGET 2: Finder Sync 扩展
+├── Sources/FinderSyncExtension/         # TARGET 2: Finder Sync 扩展
 │   ├── FinderSync.swift                   # 核心：FIFinderSync 子类
 │   ├── Actions/
 │   │   ├── FileCreator.swift              # 文件创建逻辑
@@ -137,7 +137,7 @@ mac-right/
 │   ├── Info.plist                         # 扩展元数据
 │   └── FinderSyncExtension.entitlements   # 扩展权限声明
 │
-├── Shared/                                # 两个 Target 共享代码
+├── Sources/Shared/                      # 两个 Target 共享代码
 │   ├── Constants.swift                    # 常量定义
 │   └── Preferences.swift                  # 偏好设置封装
 │

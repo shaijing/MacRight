@@ -30,21 +30,21 @@ mkdir -p "$APP_DIR/MacOS" "$APP_DIR/Resources"
 mkdir -p "$EXT_DIR/MacOS" "$EXT_DIR/Resources/Templates"
 
 HOST_SOURCES=(
-  "$PROJECT_DIR/Shared/Constants.swift"
-  "$PROJECT_DIR/Shared/Preferences.swift"
-  "$PROJECT_DIR/MacRight/MacRightApp.swift"
-  "$PROJECT_DIR/MacRight/Views/ContentView.swift"
-  "$PROJECT_DIR/MacRight/Views/SettingsView.swift"
+  "$PROJECT_DIR/Sources/Shared/Constants.swift"
+  "$PROJECT_DIR/Sources/Shared/Preferences.swift"
+  "$PROJECT_DIR/Sources/MacRight/MacRightApp.swift"
+  "$PROJECT_DIR/Sources/MacRight/Views/ContentView.swift"
+  "$PROJECT_DIR/Sources/MacRight/Views/SettingsView.swift"
 )
 
 EXT_SOURCES=(
-  "$PROJECT_DIR/Shared/Constants.swift"
-  "$PROJECT_DIR/Shared/Preferences.swift"
-  "$PROJECT_DIR/FinderSyncExtension/FinderSync.swift"
-  "$PROJECT_DIR/FinderSyncExtension/Actions/FileCreator.swift"
-  "$PROJECT_DIR/FinderSyncExtension/Actions/TerminalLauncher.swift"
-  "$PROJECT_DIR/FinderSyncExtension/Actions/CmuxLauncher.swift"
-  "$PROJECT_DIR/FinderSyncExtension/Actions/FinderFeedback.swift"
+  "$PROJECT_DIR/Sources/Shared/Constants.swift"
+  "$PROJECT_DIR/Sources/Shared/Preferences.swift"
+  "$PROJECT_DIR/Sources/FinderSyncExtension/FinderSync.swift"
+  "$PROJECT_DIR/Sources/FinderSyncExtension/Actions/FileCreator.swift"
+  "$PROJECT_DIR/Sources/FinderSyncExtension/Actions/TerminalLauncher.swift"
+  "$PROJECT_DIR/Sources/FinderSyncExtension/Actions/CmuxLauncher.swift"
+  "$PROJECT_DIR/Sources/FinderSyncExtension/Actions/FinderFeedback.swift"
 )
 
 echo "==> Compiling host app (universal binary)..."
@@ -82,7 +82,7 @@ lipo -create "$BUILD_DIR/FinderSyncExtension_arm64" "$BUILD_DIR/FinderSyncExtens
 rm "$BUILD_DIR/FinderSyncExtension_arm64" "$BUILD_DIR/FinderSyncExtension_x86_64"
 
 echo "==> Copying resources..."
-cp "$PROJECT_DIR/FinderSyncExtension/Resources/Templates/blank."* "$EXT_DIR/Resources/Templates/"
+cp "$PROJECT_DIR/Sources/FinderSyncExtension/Resources/Templates/blank."* "$EXT_DIR/Resources/Templates/"
 
 # Host app Info.plist
 cp "$GENERATED_PLIST_DIR/MacRight.Info.plist" "$APP_DIR/Info.plist"
@@ -93,10 +93,10 @@ cp "$GENERATED_PLIST_DIR/FinderSyncExtension.Info.plist" "$EXT_DIR/Info.plist"
 echo -n "APPL????" > "$APP_DIR/PkgInfo"
 
 echo "==> Signing..."
-codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" "$EXT_DIR/MacOS/FinderSyncExtension"
-codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" "$BUILD_DIR/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex"
-codesign --force --sign - --entitlements "$PROJECT_DIR/MacRight/MacRight.entitlements" "$APP_DIR/MacOS/MacRight"
-codesign --force --sign - --entitlements "$PROJECT_DIR/MacRight/MacRight.entitlements" "$BUILD_DIR/MacRight.app"
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/FinderSyncExtension/FinderSyncExtension.entitlements" "$EXT_DIR/MacOS/FinderSyncExtension"
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/FinderSyncExtension/FinderSyncExtension.entitlements" "$BUILD_DIR/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex"
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/MacRight/MacRight.entitlements" "$APP_DIR/MacOS/MacRight"
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/MacRight/MacRight.entitlements" "$BUILD_DIR/MacRight.app"
 
 # CI 模式：仅构建签名，不安装到本地
 if [ "${CI:-}" = "true" ]; then
@@ -108,8 +108,8 @@ echo "==> Installing to /Applications..."
 killall MacRight 2>/dev/null || true
 rm -rf /Applications/MacRight.app
 cp -R "$BUILD_DIR/MacRight.app" /Applications/MacRight.app
-codesign --force --sign - --entitlements "$PROJECT_DIR/FinderSyncExtension/FinderSyncExtension.entitlements" /Applications/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex
-codesign --force --sign - --entitlements "$PROJECT_DIR/MacRight/MacRight.entitlements" /Applications/MacRight.app
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/FinderSyncExtension/FinderSyncExtension.entitlements" /Applications/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex
+codesign --force --sign - --entitlements "$PROJECT_DIR/Sources/MacRight/MacRight.entitlements" /Applications/MacRight.app
 
 echo "==> Cleaning build dir extension to avoid duplicate registration..."
 rm -rf "$BUILD_DIR/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex"

@@ -5,7 +5,7 @@ import zipfile
 import os
 import io
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'FinderSyncExtension', 'Resources', 'Templates')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'Sources', 'FinderSyncExtension', 'Resources', 'Templates')
 
 
 def create_docx(path):

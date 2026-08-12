@@ -137,7 +137,7 @@ cd mac-right
 python3 Scripts/create_templates.py
 ```
 
-这会在 `FinderSyncExtension/Resources/Templates/` 下生成：
+这会在 `Sources/FinderSyncExtension/Resources/Templates/` 下生成：
 - `blank.docx` (~1 KB)
 - `blank.xlsx` (~1 KB)
 - `blank.pptx` (~3 KB)
@@ -151,17 +151,15 @@ mac-right/
 ├── build.sh                                # 一键构建脚本（核心！）
 ├── project.yml                             # 唯一构建配置（生成项目、Info.plist 和 entitlements）
 │
-├── MacRight/                               # 宿主 App 源码
+├── Sources/MacRight/                       # 宿主 App 源码
 │   ├── MacRightApp.swift                   # SwiftUI App 入口（@main）
-│   ├── MacRight.entitlements               # 宿主 App 权限声明
 │   ├── Views/
 │   │   ├── ContentView.swift               # 主界面（扩展状态 + 引导）
 │   │   └── SettingsView.swift              # 设置界面（终端选择、文件类型开关）
 │   └── Info.plist                          # （由 build.sh 动态生成）
 │
-├── FinderSyncExtension/                    # Finder Sync 扩展源码
+├── Sources/FinderSyncExtension/            # Finder Sync 扩展源码
 │   ├── FinderSync.swift                    # 扩展核心：菜单构建 + 事件处理
-│   ├── FinderSyncExtension.entitlements    # 扩展权限声明
 │   ├── Actions/
 │   │   ├── FileCreator.swift               # 文件创建逻辑
 │   │   └── TerminalLauncher.swift          # 打开终端逻辑
@@ -170,9 +168,17 @@ mac-right/
 │   │       ├── blank.docx
 │   │       ├── blank.xlsx
 │   │       └── blank.pptx
-│   └── Info.plist                          # （由 build.sh 动态生成）
 │
-├── Shared/                                 # 宿主 App 和扩展共享的代码
+├── MacRight/                               # 宿主 App 资源和生成配置
+│   ├── Assets.xcassets/                    # App 图标和颜色
+│   ├── Info.plist                          # 由 XcodeGen 生成
+│   └── MacRight.entitlements               # 由 XcodeGen 生成
+├── FinderSyncExtension/                    # 扩展资源和生成配置
+│   ├── Resources/Templates/                # Office 空白模板
+│   ├── Info.plist                          # 由 XcodeGen 生成
+│   └── FinderSyncExtension.entitlements   # 由 XcodeGen 生成
+│
+├── Sources/Shared/                         # 宿主 App 和扩展共享的代码
 │   ├── Constants.swift                     # 常量定义（App Group ID 等）
 │   └── Preferences.swift                   # 偏好设置封装
 │
@@ -440,7 +446,7 @@ killall Finder
 
 ## 7. 代码逐文件详解
 
-### 7.1 Shared/Constants.swift
+### 7.1 Sources/Shared/Constants.swift
 
 ```swift
 enum AppConstants {
@@ -452,7 +458,7 @@ enum AppConstants {
 - `appGroupID`：App Group 标识符，宿主 App 和扩展共享数据的"频道"
 - `extensionBundleID`：扩展的 Bundle Identifier，用于检查扩展是否启用
 
-### 7.2 Shared/Preferences.swift
+### 7.2 Sources/Shared/Preferences.swift
 
 偏好设置管理类，核心设计：
 
@@ -480,7 +486,7 @@ final class Preferences {
 - 这是因为宿主 App 和扩展是**不同进程**，各自有独立的 `.standard`
 - App Group 的 UserDefaults 是共享的，两边都能读写
 
-### 7.3 FinderSyncExtension/FinderSync.swift
+### 7.3 Sources/FinderSyncExtension/FinderSync.swift
 
 这是整个项目最核心的文件。
 
@@ -547,7 +553,7 @@ private var targetDirectory: URL? {
 }
 ```
 
-### 7.4 FinderSyncExtension/Actions/FileCreator.swift
+### 7.4 Sources/FinderSyncExtension/Actions/FileCreator.swift
 
 **FileType 枚举：**
 ```swift
@@ -595,7 +601,7 @@ private static func uniqueURL(for name: String, in directory: URL) -> URL {
 }
 ```
 
-### 7.5 FinderSyncExtension/Actions/TerminalLauncher.swift
+### 7.5 Sources/FinderSyncExtension/Actions/TerminalLauncher.swift
 
 ```swift
 static func open(at directory: URL, using app: TerminalApp) {
@@ -611,7 +617,7 @@ static func open(at directory: URL, using app: TerminalApp) {
 - `Process`（即 `NSTask`）在沙盒中可能受限
 - `NSWorkspace.shared.open` 是 Apple 推荐的沙盒内启动其他 App 的方式
 
-### 7.6 MacRight/MacRightApp.swift
+### 7.6 Sources/MacRight/MacRightApp.swift
 
 ```swift
 @main
@@ -625,14 +631,14 @@ struct MacRightApp: App {
 }
 ```
 
-### 7.7 MacRight/Views/ContentView.swift
+### 7.7 Sources/MacRight/Views/ContentView.swift
 
 关键功能：
 - **检测扩展状态**：通过运行 `pluginkit -m -p com.apple.FinderSync` 检查输出中是否包含我们的 Bundle ID
 - **引导启用**：显示步骤说明和"打开系统设置"按钮
 - **深度链接**：`x-apple.systempreferences:com.apple.ExtensionsPreferences` 直接打开系统设置的扩展页面
 
-### 7.8 MacRight/Views/SettingsView.swift
+### 7.8 Sources/MacRight/Views/SettingsView.swift
 
 SwiftUI 表单，使用 `@State` + `onChange` 同步到 `Preferences.shared`：
 
@@ -710,7 +716,7 @@ var enableMd: Bool {
 
 **第四步：如果新文件类型需要模板**
 
-1. 在 `FinderSyncExtension/Resources/Templates/` 下放入模板文件 `blank.md`
+1. 在 `Sources/FinderSyncExtension/Resources/Templates/` 下放入模板文件 `blank.md`
 2. 确保 `FileType.needsTemplate` 对该类型返回 `true`
 3. 在 `build.sh` 中确认模板复制命令覆盖到新文件
 
@@ -882,11 +888,11 @@ hdiutil create -volname "MacRight" \
 ```bash
 # 替换 ad-hoc 签名为 Developer ID
 codesign --force --sign "Developer ID Application: Your Name (TEAMID)" \
-    --entitlements FinderSyncExtension/FinderSyncExtension.entitlements \
+    --entitlements Sources/FinderSyncExtension/FinderSyncExtension.entitlements \
     /Applications/MacRight.app/Contents/PlugIns/FinderSyncExtension.appex
 
 codesign --force --sign "Developer ID Application: Your Name (TEAMID)" \
-    --entitlements MacRight/MacRight.entitlements \
+    --entitlements Sources/MacRight/MacRight.entitlements \
     /Applications/MacRight.app
 ```
 
@@ -1132,7 +1138,7 @@ log stream --predicate 'eventMessage CONTAINS "关键词"'
 
 ```bash
 # 1. 修改代码
-vim FinderSyncExtension/FinderSync.swift
+vim Sources/FinderSyncExtension/FinderSync.swift
 
 # 2. 构建安装
 ./build.sh

@@ -89,7 +89,8 @@
 				F3411A4C0A522F25D8B8CAB4 /* Constants.swift */,
 				031156A4E24F8D73AB2230D6 /* Preferences.swift */,
 			);
-			path = Shared;
+			name = Shared;
+			path = Sources/Shared;
 			sourceTree = "<group>";
 		};
 		BABF6DB45AC78ABF6E887AE0 /* MacRight */ = {
@@ -99,7 +100,8 @@
 				3907076461CCA0EF33E646FD /* MacRightApp.swift */,
 				FCFFCB1E0901CD532913F4E8 /* Views */,
 			);
-			path = MacRight;
+			name = MacRight;
+			path = Sources/MacRight;
 			sourceTree = "<group>";
 		};
 		BC80B8664C08FB6AE761C7A2 /* FinderSyncExtension */ = {
@@ -109,7 +111,8 @@
 				FBC0E7FA1BB28315C9EB7C8A /* Actions */,
 				F959380449C3AF9F4B72BE74 /* Resources */,
 			);
-			path = FinderSyncExtension;
+			name = FinderSyncExtension;
+			path = Sources/FinderSyncExtension;
 			sourceTree = "<group>";
 		};
 		F959380449C3AF9F4B72BE74 /* Resources */ = {
@@ -262,9 +265,9 @@
 		97ED10995FFD7F86977DDE76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = FinderSyncExtension/FinderSyncExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/FinderSyncExtension/FinderSyncExtension.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FinderSyncExtension/Info.plist;
+				INFOPLIST_FILE = Sources/FinderSyncExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.macright.app.FinderSyncExtension;
 				PRODUCT_NAME = FinderSyncExtension;
@@ -399,9 +402,9 @@
 		CE3C8E1FF89FD3F51AE98BB2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = FinderSyncExtension/FinderSyncExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/FinderSyncExtension/FinderSyncExtension.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FinderSyncExtension/Info.plist;
+				INFOPLIST_FILE = Sources/FinderSyncExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.macright.app.FinderSyncExtension;
 				PRODUCT_NAME = FinderSyncExtension;
@@ -415,9 +418,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MacRight/MacRight.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/MacRight/MacRight.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MacRight/Info.plist;
+				INFOPLIST_FILE = Sources/MacRight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.macright.app;
 				PRODUCT_NAME = MacRight;
@@ -430,9 +433,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MacRight/MacRight.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/MacRight/MacRight.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MacRight/Info.plist;
+				INFOPLIST_FILE = Sources/MacRight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.macright.app;
 				PRODUCT_NAME = MacRight;

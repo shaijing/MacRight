@@ -18,12 +18,14 @@ MacRight 是一个 macOS Finder 右键菜单扩展应用，功能：
 ## 项目结构
 
 ```
-MacRight/                  # 宿主 App（SwiftUI 设置界面）
-FinderSyncExtension/       # Finder Sync 扩展（核心功能）
-  ├── FinderSync.swift     # FIFinderSync 子类，菜单构建 + 事件路由 + 动态卷监控
-  ├── Actions/             # FileCreator.swift, TerminalLauncher.swift, CmuxLauncher.swift
+Sources/                  # Swift 源码
+  ├── MacRight/            # 宿主 App（SwiftUI 设置界面）
+  ├── FinderSyncExtension/ # Finder Sync 扩展源码
+  │   ├── FinderSync.swift # 菜单构建 + 事件路由 + 动态卷监控
+  │   └── Actions/         # 文件创建、终端和通知逻辑
+  └── Shared/              # 两个 Target 共享代码
+FinderSyncExtension/       # 扩展资源和模板
   └── Resources/Templates/ # blank.docx/xlsx/pptx 空白模板
-Shared/                    # 两个 Target 共享（Constants.swift, Preferences.swift）
 Scripts/                   # create_templates.py（生成空白 Office 模板）
 build.sh                   # 一键构建/签名/安装脚本（支持版本号参数）
 project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist / entitlements
