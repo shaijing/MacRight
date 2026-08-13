@@ -27,7 +27,8 @@ Sources/                  # Swift 源码
 FinderSyncExtension/       # 扩展资源和模板
   └── Resources/Templates/ # blank.docx/xlsx/pptx 空白模板
 Scripts/                   # create_templates.py（生成空白 Office 模板）
-build.sh                   # 一键构建/签名/安装脚本（支持版本号参数）
+build.sh                   # swiftc 一键构建/签名/安装脚本（支持版本号参数）
+build-xcode.sh             # Xcode/xcodebuild 一键构建/签名/安装脚本（可选）
 project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist / entitlements
 ```
 
@@ -42,6 +43,10 @@ project.yml                # 唯一构建配置，生成 .xcodeproj / Info.plist
 
 # CI 构建（仅构建签名，不安装）
 CI=true ./build.sh v1.0.0
+
+# 可选：使用完整 Xcode / xcodebuild 构建
+./build-xcode.sh
+CI=true ./build-xcode.sh v1.0.0
 
 # 生成 Office 空白模板（首次或模板丢失时）
 python3 Scripts/create_templates.py

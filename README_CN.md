@@ -51,6 +51,9 @@ python3 Scripts/create_templates.py
 # 一键构建、签名、安装并启动
 ./build.sh
 
+# 使用完整 Xcode / xcodebuild 构建、签名、安装并启动
+./build-xcode.sh
+
 # 清理构建产物和缓存
 ./clean.sh
 ```
@@ -63,7 +66,7 @@ python3 Scripts/create_templates.py
 brew install xcodegen
 ```
 
-`project.yml` 是构建元数据的唯一来源。`build.sh` 会先运行 `xcodegen generate` 生成 Xcode 项目、Info.plist 和 entitlements，然后仍使用 `swiftc` 编译 Universal Binary。
+`project.yml` 是构建元数据的唯一来源。`build.sh` 会先运行 `xcodegen generate` 生成 Xcode 项目、Info.plist 和 entitlements，然后仍使用 `swiftc` 编译 Universal Binary。安装完整 Xcode 后，也可以使用 `build-xcode.sh` 走 `xcodebuild` 流程，产物同样会 ad-hoc 签名、安装到 `/Applications` 并注册 Finder 扩展。
 
 ### 启用扩展
 
@@ -117,7 +120,7 @@ MacRight.app（宿主 App — SwiftUI 设置界面）
 | 语言 | Swift 5.9+ |
 | 宿主 App UI | SwiftUI |
 | 扩展 | FinderSync 框架 (AppKit) |
-| 构建 | `swiftc` 命令行 + Shell 脚本（无需 Xcode） |
+| 构建 | 默认 `swiftc` 命令行 + Shell 脚本；可选 `xcodebuild` |
 | 文件模板 | 最小化 Office Open XML（基于 ZIP） |
 | 第三方依赖 | 无（纯 Apple 原生框架） |
 

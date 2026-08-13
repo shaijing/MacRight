@@ -371,7 +371,24 @@ build.sh 执行流程：
 11. 启动 App
 ```
 
-### 8.2 为什么不用 xcodebuild
+### 8.2 Xcode 构建脚本 (build-xcode.sh)
+
+```
+build-xcode.sh 执行流程：
+
+1. 清理 DerivedData/ 目录
+2. xcodegen generate 生成 .xcodeproj、Info.plist 和 entitlements
+3. xcodebuild 编译 MacRight scheme
+   └── 强制 ARCHS="arm64 x86_64" 和 ONLY_ACTIVE_ARCH=NO
+4. 校验 FinderSyncExtension.appex 内存在 Resources/Templates
+5. Ad-hoc 代码签名 (带 entitlements)
+6. 安装到 /Applications
+7. 清理 DerivedData/ 中的扩展副本 (防止重复注册)
+8. pluginkit 注册并启用扩展
+9. 启动 App
+```
+
+### 8.3 为什么默认不用 xcodebuild
 
 当前开发环境只有 Command Line Tools，没有完整 Xcode。`swiftc` 可以直接编译 Swift 代码并链接框架，`codesign` 处理签名。整个构建流程无需 Xcode。
 

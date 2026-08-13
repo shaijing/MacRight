@@ -30,8 +30,8 @@ targets:
       path: Sources/MacRight/Info.plist
       properties:
         CFBundleDisplayName: MacRight
-        CFBundleShortVersionString: "1.0.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSMinimumSystemVersion: "13.0"
         NSPrincipalClass: NSApplication
         NSHighResolutionCapable: true
@@ -63,18 +63,18 @@ targets:
           - "Info.plist"
           - "FinderSyncExtension.entitlements"
           - Resources/Templates
+      - path: Sources/FinderSyncExtension/Resources/Templates
+        buildPhase: resources
+        type: folder
       - path: Sources/Shared
         excludes:
           - "**/.DS_Store"
-    resources:
-      - path: Sources/FinderSyncExtension/Resources/Templates
-        buildPhase: resources
     info:
       path: Sources/FinderSyncExtension/Info.plist
       properties:
         CFBundleDisplayName: MacRight Finder Extension
-        CFBundleShortVersionString: "1.0.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSMinimumSystemVersion: "13.0"
         NSExtension:
           NSExtensionAttributes: {}

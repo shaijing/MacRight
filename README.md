@@ -48,6 +48,9 @@ python3 Scripts/create_templates.py
 # Build, sign, install, and launch
 ./build.sh
 
+# Optional: build through full Xcode / xcodebuild
+./build-xcode.sh
+
 # Clean build outputs and caches
 ./clean.sh
 ```
@@ -60,7 +63,7 @@ Install XcodeGen with Homebrew:
 brew install xcodegen
 ```
 
-`project.yml` is the single source of build metadata. `build.sh` runs `xcodegen generate` first to create the Xcode project, Info.plists, and entitlements, then continues to compile the Universal Binary with `swiftc`.
+`project.yml` is the single source of build metadata. `build.sh` runs `xcodegen generate` first to create the Xcode project, Info.plists, and entitlements, then continues to compile the Universal Binary with `swiftc`. If full Xcode is installed, `build-xcode.sh` can build the same app through `xcodebuild`, ad-hoc sign it, install it into `/Applications`, and register the Finder extension.
 
 ### Enable the Extension
 
@@ -112,7 +115,7 @@ For detailed architecture, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | Language | Swift 5.9+ |
 | Host App UI | SwiftUI |
 | Extension | FinderSync framework (AppKit) |
-| Build | `swiftc` CLI + shell script (no Xcode required) |
+| Build | Default `swiftc` CLI + shell script; optional `xcodebuild` |
 | File Templates | Minimal Office Open XML (ZIP-based) |
 | Dependencies | None (pure Apple frameworks) |
 

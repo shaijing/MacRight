@@ -1,4 +1,5 @@
 # Xcode
+MacRight.xcodeproj/
 build/
 Scripts/__pycache__/
 *.xcuserdata

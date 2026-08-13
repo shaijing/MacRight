@@ -303,7 +303,24 @@ cd /path/to/mac-right
 9. **注册扩展** — 用 `pluginkit` 激活
 10. **启动 App** — 自动打开 MacRight.app
 
-### 5.2 构建产物结构
+### 5.2 Xcode 构建（可选）
+
+如果安装了完整 Xcode，可以使用同一份 `project.yml` 走 `xcodebuild` 流程：
+
+```bash
+# 构建、ad-hoc 签名、安装到 /Applications 并启动
+./build-xcode.sh
+
+# 指定版本号
+./build-xcode.sh v1.0.0
+
+# CI 模式：仅构建和签名，不安装
+CI=true ./build-xcode.sh v1.0.0
+```
+
+`build-xcode.sh` 会先运行 `xcodegen generate`，然后调用 `xcodebuild` 编译 `MacRight` scheme。脚本会强制 `ARCHS="arm64 x86_64"` 和 `ONLY_ACTIVE_ARCH=NO`，因此 Release 产物仍是 Universal Binary。构建后会手动 ad-hoc 签名、安装到 `/Applications`、清理 `DerivedData` 中的扩展副本并注册 Finder 扩展。
+
+### 5.3 构建产物结构
 
 构建后 `/Applications/MacRight.app` 的内部结构：
 
@@ -328,7 +345,7 @@ MacRight.app/
                         └── blank.pptx
 ```
 
-### 5.3 编译参数详解
+### 5.4 编译参数详解
 
 宿主 App 编译命令：
 
@@ -353,7 +370,7 @@ swiftc \
                                           # 扩展没有 main()，由系统提供入口
 ```
 
-### 5.4 首次运行后的操作
+### 5.5 首次运行后的操作
 
 构建完成后，需要在系统设置中手动启用扩展：
 
